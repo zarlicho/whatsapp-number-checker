@@ -24,15 +24,12 @@ class Main:
     def __init__(self,urx):
         self.ur = urx
         self.options = Options()
-        # self.options.add_argument('--headless')
-        # self.options.add_argument('--disable-gpu')
+        self.options.add_argument('--headless')
+        self.options.add_argument('--disable-gpu')
         ua = UserAgent()
         usera = ua.random
         print(usera)
-        # self.options.add_argument(f'user-agent={usera}')
-        # self.options.add_argument("user-data-dir=C:\chromeprofile2")
         self.driver = uc.Chrome(options=self.options)
-        # self.driver = webdriver.Chrome(ChromeDriverManager().install(), options=self.options) 
         self.actions = ActionChains(self.driver)
         self.wait = WebDriverWait(self.driver, 30)
         self.solver = RecaptchaSolver(driver=self.driver)
