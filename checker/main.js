@@ -17,6 +17,16 @@ client.on("qr", qr => {
     qrcode.generate(qr, {small: true} );
 });
 
+function saveToFile(fileName, data) {
+  fs.writeFile(fileName, data, function(err) {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log(`Data berhasil disimpan ke dalam file  ${fileName}`);
+    }
+  });
+}
+
 client.on('ready', async () => {
   const args = process.argv.slice(2);
   const fileNameIndex = args.indexOf('-f');
@@ -29,17 +39,21 @@ client.on('ready', async () => {
     const lines = data.split('\n');
     for (let i = 0; i < lines.length; i++) {
       const phoneNumber = lines[i].trim();
-      const isRegistered = await client.isRegisteredUser(phoneNumber);
-      if (isRegistered) {
-        console.log(cc.set("fg_green", `${phoneNumber} terdaftar di WhatsApp`))
-        fs.appendFile('result\\valid.txt',phoneNumber + "\n", function (err) {
-          console.log('Saved!');
-      });
-      } else {
-        console.log(cc.set("fg_red", `${phoneNumber} tidak terdaftar di WhatsApp`))
-        fs.appendFile('result\\invalid.txt',phoneNumber + "\n", function (err) {
-          console.log('Saved!');
-      });
+      try{
+        const isRegistered = await client.isRegisteredUser(phoneNumber);
+        if (isRegistered) {
+          console.log(cc.set("fg_green", `${phoneNumber} terdaftar di WhatsApp`))
+          fs.appendFile('result\\valid.txt',phoneNumber + "\n", function (err) {
+            console.log('Saved!');
+        });
+        } else {
+          console.log(cc.set("fg_red", `${phoneNumber} tidak terdaftar di WhatsApp`))
+          fs.appendFile('result\\invalid.txt',phoneNumber + "\n", function (err) {
+            console.log('Saved!');
+        });
+        }
+      } catch (error){
+        console.log(cc.set("fg_yellow","error caused by phone number format!"))
       }
     }
     console.log("finish")
